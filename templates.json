@@ -1,0 +1,51 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "webappname": {
+            "type": "string"
+        },
+        "appseviceplanname": {
+            "type": "string"
+           
+        }
+    },
+    "variables": {},
+    "resources": [
+        {
+            "name": "[parameters('webappname')]",
+            "type": "Microsoft.Web/sites",
+            "apiVersion": "2022-09-01",
+            "location": "[resourceGroup().location]",
+            "tags": {
+                "[concat('hidden-related:', resourceGroup().id, '/providers/Microsoft.Web/serverfarms/',parameters('appseviceplanname'))]": "Resource",
+                "displayName": "[parameters('webappname')]"
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/serverfarms', parameters('appseviceplanname'))]"
+            ],
+            "properties": {
+                "name": "[parameters('webappname')]",
+                "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('appseviceplanname'))]"
+            }
+        },
+        {
+            "name": "[parameters('appseviceplanname')]",
+            "type": "Microsoft.Web/serverfarms",
+            "apiVersion": "2022-09-01",
+            "location": "[resourceGroup().location]",
+            "sku": {
+                "name": "F1",
+                "capacity": 1
+            },
+            "tags": {
+                "displayName": "[parameters('appseviceplanname')]"
+            },
+            "properties": {
+                "name": "[parameters('appseviceplanname')]"
+            }
+        }
+
+    ]
+    
+}
